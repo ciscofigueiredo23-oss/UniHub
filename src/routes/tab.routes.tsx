@@ -1,6 +1,8 @@
 import { createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import HomeScreen from '../pages/Home/HomeScreen';
 import CustomNavBar from '../components/CustomNavBar/CustomNavBar';
+import SubjectsScreen from '../pages/Subjects/SubjectsScreen';
+import GradeScreen from '../pages/Grade/GradeScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -16,6 +18,14 @@ export function TabRoutes() {
             <Tab.Screen
                 name="Home"
                 component={HomeScreen}
+            />
+            <Tab.Screen
+                name="Disciplinas"
+                component={SubjectsScreen}
+            />
+            <Tab.Screen
+                name="Grade"
+                component={GradeScreen}
             />
         </Tab.Navigator>
 

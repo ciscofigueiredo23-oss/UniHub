@@ -9,7 +9,6 @@ import { getDb } from './database';
 export const getDisciplinas = async (): Promise<Disciplina[]> => {
     const database = await getDb();
     const disciplinas = await database.getAllAsync<Disciplina>('SELECT * FROM disciplinas;');
-    console.log('Disciplinas carregadas:', disciplinas);
 
     // Converte os campos de string JSON de volta para objetos
     return disciplinas.map(d => ({

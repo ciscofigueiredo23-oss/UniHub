@@ -39,11 +39,11 @@ const historicoData: HistoricoItem[] = [
 
   
   { codigo: 'ENGC31', notaFinal: 0, status: 'MATR' },
-  { codigo: 'ENGC33', notaFinal: 5.2, status: 'MATR' },
-  { codigo: 'ENGC34', notaFinal: 5.0, status: 'MATR' },
-  { codigo: 'ENGC41', notaFinal: 6.3, status: 'MATR' },
-  { codigo: 'ENGC44', notaFinal: 6.6, status: 'MATR' },
-  { codigo: 'ENGC46', notaFinal: 5.6, status: 'MATR' },
+  { codigo: 'ENGC33', notaFinal: 0, status: 'MATR' },
+  { codigo: 'ENGC34', notaFinal: 0, status: 'MATR' },
+  { codigo: 'ENGC41', notaFinal: 0, status: 'MATR' },
+  { codigo: 'ENGC44', notaFinal: 0, status: 'MATR' },
+  { codigo: 'ENGC46', notaFinal: 0, status: 'MATR' },
 ];
 
 export default historicoData;

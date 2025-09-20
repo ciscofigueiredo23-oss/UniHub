@@ -1,101 +1,95 @@
-// src/pages/Home/HomeScreen.tsx
-import { StyleSheet, Text, View, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
-import { useSubjects } from '../../context/SubjectsContext';
-import { useSchedules } from '../../context/SchedulesContext';
+import React, { useEffect, useState, useMemo } from "react";
+import * as ScreenOrientation from 'expo-screen-orientation';
 import { useNavigation } from '@react-navigation/native';
+import ProgressCard from "../../components/Cards/progressCard";
+import SubjectsCard from "../../components/Cards/subjectsCard";
+import EventsCard from "../../components/Cards/eventsCard";
+import Header from "../../components/Header";
+import { themes } from "../../global/themes";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSubjects } from '../../context/SubjectsContext';
 import { Disciplina } from '../../types';
-import { StackParamList } from '../../routes/context.routes'; // ⚠️ Importe a tipagem ⚠️
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'; // ⚠️ Importe o tipo de prop ⚠️
 
-// ⚠️ Adicione a tipagem para o hook de navegação ⚠️
-type HomeScreenNavigationProp = NativeStackNavigationProp<StackParamList, 'DetailsSubject'>;
+import { 
+    ScrollView,
+    StatusBar,
+} from 'react-native';
 
-export default function HomeScreen() {
-  const { disciplinas, loading: subjectsLoading } = useSubjects();
-  const { schedules, loading: schedulesLoading } = useSchedules();
-  const navigation = useNavigation<HomeScreenNavigationProp>(); // ⚠️ Use a tipagem aqui ⚠️
+function calcularSemestreAtual(disciplinas: Disciplina[]): number {
+    if (!disciplinas.length) return 1;
 
-  const loading = subjectsLoading || schedulesLoading;
+    // Descobre o maior período cadastrado
+    const maxPeriodo = Math.max(...disciplinas.map(d => d.period));
 
-  const handleDisciplinePress = (discipline: Disciplina) => {
-    navigation.navigate('DetailsSubject', { discipline });
-  };
+    for (let periodo = 1; periodo <= maxPeriodo; periodo++) {
+        // Filtra disciplinas do período atual
+        const disciplinasDoPeriodo = disciplinas.filter(d => d.period === periodo);
+        if (disciplinasDoPeriodo.length === 0) continue; // Se não há disciplinas nesse período, pula
 
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#0000ff" />
-        <Text>Carregando dados...</Text>
-      </View>
-    );
-  }
+        // Se alguma disciplina do período NÃO está concluída, retorna esse período como o atual
+        const todasConcluidas = disciplinasDoPeriodo.every(d => d.status === "Concluída");
+        if (!todasConcluidas) {
+            return periodo;
+        }
+    }
 
-  return (
-    <ScrollView style={styles.scrollView}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Disciplinas</Text>
-        {disciplinas.length > 0 ? (
-          disciplinas.map((d) => (
-            <TouchableOpacity key={d.id} onPress={() => handleDisciplinePress(d)}>
-              <View style={styles.item}>
-                <Text style={styles.itemText}>Nome: {d.nome}</Text>
-                <Text style={styles.itemText}>Código: {d.codigo}</Text>
-                <Text style={styles.itemText}>Status: {d.status}</Text>
-                <Text style={styles.itemText}>Nota Final: {d.notaFinal}</Text>
-              </View>
-            </TouchableOpacity>
-          ))
-        ) : (
-          <Text>Nenhuma disciplina encontrada.</Text>
-        )}
-
-        <Text style={styles.title}>Agenda</Text>
-        {schedules.length > 0 ? (
-          schedules.map((s) => (
-            <View key={s.id} style={styles.item}>
-              <Text style={styles.itemText}>Título: {s.title}</Text>
-              <Text style={styles.itemText}>Descrição: {s.description}</Text>
-              <Text style={styles.itemText}>Data: {s.date}</Text>
-            </View>
-          ))
-        ) : (
-          <Text>Nenhum item de agenda encontrado.</Text>
-        )}
-      </View>
-    </ScrollView>
-  );
+    // Se todas as disciplinas de todos os períodos estão concluídas, retorna o próximo período
+    return maxPeriodo + 1;
 }
 
-const styles = StyleSheet.create({
-  scrollView: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  container: {
-    flex: 1,
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginVertical: 10,
-  },
-  item: {
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 8,
-    marginVertical: 5,
-    width: '100%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  itemText: {
-    fontSize: 16,
-    color: '#333',
-  },
-});
+export default function HomeScreen() { 
+    const navigation = useNavigation(); 
+    const { disciplinas } = useSubjects(); 
+
+    const [progress, setProgress] = useState(0);
+
+    const { disciplinasConcluidas, disciplinasTotais } = useMemo(() => {
+        // Filtra disciplinas que NÃO são do período 11
+        const disciplinasValidas = disciplinas.filter(d => d.period !== 11);
+        const concluidas = disciplinasValidas.filter(d => d.status === "Concluída").length;
+        const totais = disciplinasValidas.length;
+        return { disciplinasConcluidas: concluidas, disciplinasTotais: totais };
+    }, [disciplinas]);
+
+    const semestreAtual = calcularSemestreAtual(disciplinas);
+
+    useEffect(() => { 
+        ScreenOrientation.unlockAsync(); 
+
+        let current = 0; 
+        const interval = setInterval(() => { 
+            if (current < disciplinasConcluidas) { 
+                current += 1; 
+                setProgress(current); 
+            } else { 
+                clearInterval(interval); 
+            } 
+        }, 30); 
+
+        return () => clearInterval(interval); 
+    }, [disciplinasConcluidas]);
+
+    return ( 
+        <SafeAreaView style={{ flex: 1, backgroundColor: themes.colors.background, }}> 
+            <ScrollView 
+                contentContainerStyle={{ 
+                    backgroundColor: themes.colors.background, 
+                    alignItems: 'center', 
+                    paddingBottom: 20, 
+                }} 
+            > 
+                <Header 
+                    title="Olá, Francisco Figueiredo!" 
+                    subtitle="Matrícula: 222115260" 
+                /> 
+                <ProgressCard 
+                    disciplinasConcluidas={progress} 
+                    disciplinasTotais={disciplinasTotais > 0 ? disciplinasTotais : 1} 
+                    semestreAtual={semestreAtual}
+                /> 
+                <SubjectsCard /> 
+                <EventsCard /> 
+            </ScrollView> 
+        </SafeAreaView> 
+    ); 
+}

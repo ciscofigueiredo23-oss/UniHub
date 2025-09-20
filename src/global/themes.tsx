@@ -10,12 +10,19 @@ export const themes = {
         yellowLight: '#fdf1dd',
         yellowDark: '#f59f0a',
         fontColor: '#6b6b6bff',
-        redLight: '#fde2e2',       // para alertas ou erros suaves
-        redDark: '#e53935',        // para alertas ou erros destacados
-        purpleLight: '#f3e8ff',    // para destaques ou elementos especiais
-        purpleDark: '#8b5cf6',     // para destaques mais fortes
-        orangeLight: '#fff4e1',    // para avisos ou informações secundárias
-        orangeDark: '#f97316',      // para avisos mais chamativos
-
+        redLight: '#fde2e2',
+        redDark: '#e53935',
+        purpleLight: '#f3e8ff',
+        purpleDark: '#8b5cf6',
+        orangeLight: '#fff4e1',
+        orangeDark: '#f97316',
+        
+        // Cores adicionadas para compatibilidade
+        container: '#f5f5f5', 
+        card: '#FFFFFF',
+        text: '#333333',
+        textSecondary: '#666666',
+        blue: '#3B82F6', // Usando a mesma cor que blueDark para consistência
+        gray: '#999999', // Uma cor cinza para elementos inativos ou bloquedos
     }
-}
+};

@@ -52,7 +52,6 @@ const CustomNavBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
             onPress={onPress}
             style={[CustomNavBarStyles.tabItem, {backgroundColor: isFocused ? inactiveColor : 'transparent'}]}
           >
-
             {getIconByRouteName(route.name, isFocused ? activeColor : inactiveColor)}
             {isFocused && <Animated.Text entering={FadeIn.duration(200)} exiting={FadeIn.duration(200)} style={CustomNavBarStyles.text}>
               {label as string}
@@ -67,9 +66,10 @@ const CustomNavBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
     switch (routeName) {
       case 'Home':
         return <Octicons name="home" size={24} color={color} />;
-      case 'DetailsScreen':
-        return <Octicons name="home" size={24} color={color} />;
-    
+      case 'Disciplinas':
+        return <Octicons name="book" size={24} color={color} />;
+      case 'Grade':
+        return <Octicons name="calendar" size={24} color={color} />;
     }
   } 
 };
