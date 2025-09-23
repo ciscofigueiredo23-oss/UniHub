@@ -30,10 +30,11 @@ export interface Disciplina {
   professor: string;
   emailProfessor: string;
   horario: string;
+  date: string;
   sala: string;
   notaFinal: number;
   notaParcial: Nota[];
-  falta: string;
+  falta: number;
   status: StatusType;
   period: number;
   preRequirements: SubjectRef[];

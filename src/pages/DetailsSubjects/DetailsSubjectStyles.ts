@@ -40,6 +40,7 @@ export const DetailsSubjectStyles = StyleSheet.create({
   },
 
   btn:{
+    flexDirection:'row',
     borderRadius: 10,
     backgroundColor: themes.colors.background,
     marginHorizontal: 10,
@@ -47,7 +48,14 @@ export const DetailsSubjectStyles = StyleSheet.create({
     height: 50,
     alignItems:'center',
     justifyContent:'center',
-    width:'95%'
+    width:'25%'
+  },
+
+  btnBox:{
+    width: '95%',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
   },
 
   card:{
@@ -68,16 +76,24 @@ export const DetailsSubjectStyles = StyleSheet.create({
   },
 
   cardBody:{
-    paddingHorizontal: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: themes.colors.background,
+    borderRadius: 20,
+    paddingVertical: 20,
+    marginBottom: 10,
+    paddingHorizontal: 20,
+
+        elevation: 2, // sombra no Android
+        shadowColor: "#000", // sombra no iOS
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 6,
   },
   
   row: { // Estilo adicionado
     flexDirection: 'row',
-    justifyContent: 'space-between',
     width: '100%',
     marginBottom: 10,
+    
   },
 
   text:{
@@ -99,7 +115,7 @@ export const DetailsSubjectStyles = StyleSheet.create({
   },
 
   dropdownStyle:{
-    marginTop:-20,
+    marginTop: 30,
     padding: 10,
     backgroundColor: themes.colors.background, // fundo do item
     borderBottomColor: themes.colors.grayDark, // separador

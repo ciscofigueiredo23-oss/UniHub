@@ -55,22 +55,12 @@ export default function EditDisciplinaModal({
                     <ScrollView>
                         <Text style={EditDisciplinaModalStyles.title}>Editar Disciplina</Text>
                         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
-                            <Text style={[GlobalStyles.text, { marginRight:10 }]}>Nome:</Text>
-                            <TextInput
-                                style={EditDisciplinaModalStyles.input}
-                                value={editDisciplina.nome}
-                                onChangeText={text => handleEditField("nome", text)}
-                                placeholder="Nome"
-                            />
+                            <Text style={[GlobalStyles.text, { marginRight:10 }]}>Nome: </Text>
+                            <Text style={[GlobalStyles.text, { marginRight:10 }]}>{editDisciplina.nome}</Text>
                         </View>
                         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
-                            <Text style={[GlobalStyles.text, { marginRight:10 }]}>Código:</Text>
-                            <TextInput
-                                style={EditDisciplinaModalStyles.input}
-                                value={editDisciplina.codigo}
-                                onChangeText={text => handleEditField("codigo", text)}
-                                placeholder="Código"
-                            />
+                            <Text style={[GlobalStyles.text, { marginRight:10 }]}>Código: </Text>
+                            <Text style={[GlobalStyles.text, { marginRight:10 }]}>{editDisciplina.codigo}</Text>
                         </View>
                         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
                             <Text style={[GlobalStyles.text, { marginRight:10 }]}>Professor:</Text>
@@ -108,16 +98,7 @@ export default function EditDisciplinaModal({
                                 placeholder="Sala"
                             />
                         </View>
-                        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
-                            <Text style={[GlobalStyles.text, { marginRight:10 }]}>Período:</Text>
-                            <TextInput
-                                style={EditDisciplinaModalStyles.input}
-                                value={String(editDisciplina.period)}
-                                onChangeText={text => handleEditField("period", Number(text))}
-                                placeholder="Período"
-                                keyboardType="numeric"
-                            />
-                        </View>
+                        
                         <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
                             <Text style={[GlobalStyles.text, { marginRight:10 }]}>Nota Final:</Text>
                             <TextInput

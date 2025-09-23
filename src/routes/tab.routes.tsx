@@ -3,6 +3,7 @@ import HomeScreen from '../pages/Home/HomeScreen';
 import CustomNavBar from '../components/CustomNavBar/CustomNavBar';
 import SubjectsScreen from '../pages/Subjects/SubjectsScreen';
 import GradeScreen from '../pages/Grade/GradeScreen';
+import ConfigScreen from '../pages/Config/ConfigScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -26,6 +27,10 @@ export function TabRoutes() {
             <Tab.Screen
                 name="Grade"
                 component={GradeScreen}
+            />
+            <Tab.Screen
+                name="Config"
+                component={ConfigScreen}
             />
         </Tab.Navigator>
 

@@ -70,6 +70,8 @@ const CustomNavBar: React.FC<BottomTabBarProps> = ({ state, descriptors, navigat
         return <Octicons name="book" size={24} color={color} />;
       case 'Grade':
         return <Octicons name="calendar" size={24} color={color} />;
+      case 'Config':
+        return <Octicons name="gear" size={24} color={color} />;
     }
   } 
 };

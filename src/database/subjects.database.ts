@@ -1,6 +1,6 @@
 // src/database/subjects.database.ts
 
-import { Disciplina, Nota, SubjectRef } from '../types';
+import { Disciplina } from '../types';
 import { getDb } from './database';
 
 /**
@@ -10,13 +10,28 @@ export const getDisciplinas = async (): Promise<Disciplina[]> => {
     const database = await getDb();
     const disciplinas = await database.getAllAsync<Disciplina>('SELECT * FROM disciplinas;');
 
-    // Converte os campos de string JSON de volta para objetos
-    return disciplinas.map(d => ({
-        ...d,
-        notaParcial: JSON.parse(d.notaParcial as string) as Nota[],
-        preRequirements: JSON.parse(d.preRequirements as string) as SubjectRef[],
-        unlocks: JSON.parse(d.unlocks as string) as SubjectRef[],
-    }));
+    return disciplinas.map(d => {
+        // Função helper para fazer o parse JSON de forma segura.
+        // Se a string não for um JSON válido, retorna um array vazio []
+        const safeParse = (value: string | undefined | null) => {
+            if (value && typeof value === 'string' && (value.startsWith('[') || value.startsWith('{'))) {
+                try {
+                    return JSON.parse(value);
+                } catch (e) {
+                    console.error("Erro ao fazer o parse JSON:", value, e);
+                    return [];
+                }
+            }
+            return [];
+        };
+
+        return {
+            ...d,
+            notaParcial: safeParse(d.notaParcial as string),
+            preRequirements: safeParse(d.preRequirements as string),
+            unlocks: safeParse(d.unlocks as string),
+        };
+    });
 };
 
 /**
@@ -31,7 +46,7 @@ export const insertDisciplinas = async (disciplinas: Disciplina[]) => {
     await database.runAsync("BEGIN TRANSACTION;");
     try {
         const insertStmt = await database.prepareAsync(
-            `INSERT INTO disciplinas (id, nome, codigo, professor, emailProfessor, horario, sala, notaFinal, notaParcial, falta, status, period, preRequirements, unlocks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
+            `INSERT INTO disciplinas (id, nome, codigo, professor, emailProfessor, date, horario, sala, notaFinal, notaParcial, falta, status, period, preRequirements, unlocks) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`
         );
 
         for (const disciplina of disciplinas) {
@@ -41,6 +56,7 @@ export const insertDisciplinas = async (disciplinas: Disciplina[]) => {
                 disciplina.codigo,
                 disciplina.professor,
                 disciplina.emailProfessor,
+                disciplina.date,
                 disciplina.horario,
                 disciplina.sala,
                 disciplina.notaFinal,
@@ -69,12 +85,13 @@ export const insertDisciplinas = async (disciplinas: Disciplina[]) => {
 export const updateDisciplinaDB = async (disciplina: Disciplina) => {
     const database = await getDb();
     await database.runAsync(
-        `UPDATE disciplinas SET nome=?, codigo=?, professor=?, emailProfessor=?, horario=?, sala=?, notaFinal=?, notaParcial=?, falta=?, status=?, period=?, preRequirements=?, unlocks=? WHERE id=?;`,
+        `UPDATE disciplinas SET nome=?, codigo=?, professor=?, emailProfessor=?, date=?, horario=?, sala=?, notaFinal=?, notaParcial=?, falta=?, status=?, period=?, preRequirements=?, unlocks=? WHERE id=?;`,
         [
             disciplina.nome,
             disciplina.codigo,
             disciplina.professor,
             disciplina.emailProfessor,
+            disciplina.date,
             disciplina.horario,
             disciplina.sala,
             disciplina.notaFinal,

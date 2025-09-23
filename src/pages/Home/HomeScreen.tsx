@@ -37,8 +37,7 @@ function calcularSemestreAtual(disciplinas: Disciplina[]): number {
     return maxPeriodo + 1;
 }
 
-export default function HomeScreen() { 
-    const navigation = useNavigation(); 
+export default function HomeScreen() {
     const { disciplinas } = useSubjects(); 
 
     const [progress, setProgress] = useState(0);
@@ -50,6 +49,7 @@ export default function HomeScreen() {
         const totais = disciplinasValidas.length;
         return { disciplinasConcluidas: concluidas, disciplinasTotais: totais };
     }, [disciplinas]);
+    console.log(disciplinasConcluidas, disciplinasTotais);
 
     const semestreAtual = calcularSemestreAtual(disciplinas);
 
@@ -70,12 +70,12 @@ export default function HomeScreen() {
     }, [disciplinasConcluidas]);
 
     return ( 
-        <SafeAreaView style={{ flex: 1, backgroundColor: themes.colors.background, }}> 
+        <SafeAreaView style={{ flex: 1, backgroundColor: themes.colors.background,  }}> 
             <ScrollView 
                 contentContainerStyle={{ 
                     backgroundColor: themes.colors.background, 
                     alignItems: 'center', 
-                    paddingBottom: 20, 
+                    paddingBottom: 100, 
                 }} 
             > 
                 <Header 

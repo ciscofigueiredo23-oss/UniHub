@@ -6,7 +6,6 @@ import { themes } from '../../global/themes';
 import { HomeStyles } from "../../pages/Home/HomeStyles";
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { useSubjects } from "../../context/SubjectsContext";
-import { Disciplina } from "../../types";
 
 export default function SubjectsCard() {
     const navigation = useNavigation<NavigationProp<any>>();

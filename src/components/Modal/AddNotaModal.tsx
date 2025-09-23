@@ -6,6 +6,9 @@ import { Dropdown } from "react-native-element-dropdown";
 import { DetailsSubjectStyles } from "../../pages/DetailsSubjects/DetailsSubjectStyles";
 import { MaterialIcons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { SchedulesItem } from '../../types';
+import { addSchedulesItem } from '../../database/schedules.database';
+import { useSchedules } from '../../context/SchedulesContext';
 
 interface Nota {
   tipo: string;
@@ -22,12 +25,20 @@ interface AddNotaModalProps {
   onSave: (nota: Nota) => void;
 }
 
+// Nova função para formatar a data de DD/MM/AAAA para YYYY-MM-DD
+const formatDateForDB = (dateString: string): string => {
+  const [day, month, year] = dateString.split('/');
+  return `${year}-${month}-${day}`;
+};
+
 export default function AddNotaModal({ visible, onClose, disciplina, onSave }: AddNotaModalProps) {
   const [tipoNota, setTipoNota] = useState<string | null>(null);
   const [data, setData] = useState<string>("");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [pesoInput, setPesoInput] = useState("");
   const [descricaoInput, setDescricaoInput] = useState("");
+
+  const { refreshSchedules } = useSchedules();
 
   const handleDateChange = (_: any, selectedDate?: Date) => {
     setShowDatePicker(false);
@@ -44,7 +55,7 @@ export default function AddNotaModal({ visible, onClose, disciplina, onSave }: A
     { label: "Participação", value: "Participacao" },
   ];
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!tipoNota || !data) {
       Alert.alert("Erro", "Por favor, preencha o tipo de avaliação e a data.");
       return;
@@ -52,13 +63,29 @@ export default function AddNotaModal({ visible, onClose, disciplina, onSave }: A
 
     const novaNota: Nota = {
       tipo: tipoNota,
-      valor: 0, // Definido como 0, pois será preenchido em outro lugar
+      valor: 0,
       peso: pesoInput,
       data,
       descricao: descricaoInput,
     };
 
     onSave(novaNota);
+    
+    // Adicionar o evento na agenda
+    const newScheduleItem: Omit<SchedulesItem, 'id'> = {
+        title: `${disciplina.nome} - ${tipoNota}`,
+        description: `${descricaoInput || 'Sem Descrição'}.`,
+        date: formatDateForDB(data),
+        type: `{tipoNota}`,
+    };
+
+    try {
+        await addSchedulesItem(newScheduleItem);
+        await refreshSchedules();
+    } catch (error) {
+        console.error('Erro ao adicionar evento na agenda:', error);
+        Alert.alert("Erro", "Não foi possível adicionar o evento na agenda.");
+    }
     
     // Limpar os estados do formulário após salvar
     setTipoNota(null);
@@ -118,6 +145,7 @@ export default function AddNotaModal({ visible, onClose, disciplina, onSave }: A
                 style={DetailsSubjectStyles.textInput}
                 placeholder="Ex.: 2.5"
                 placeholderTextColor={'#b9b9b9ff'}
+                keyboardType="numeric"  
                 value={pesoInput}
                 onChangeText={setPesoInput}
               />
@@ -125,7 +153,7 @@ export default function AddNotaModal({ visible, onClose, disciplina, onSave }: A
             <View style={{ flex: 1, marginRight: 10 }}>
               <Text style={DetailsSubjectStyles.text}>Data:</Text>
               <TouchableOpacity
-                style={[DetailsSubjectStyles.textInput, { flexDirection: "row", alignItems: "center", paddingRight: 10, }]}
+                style={[DetailsSubjectStyles.textInput, { flexDirection: "row", alignItems: "center", paddingRight: 10, height: 40 }]}
                 onPress={() => setShowDatePicker(true)}
               >
                 <Text style={{ flex: 1, color: data ? themes.colors.fontColor : "#b9b9b9ff" }}>
@@ -155,11 +183,11 @@ export default function AddNotaModal({ visible, onClose, disciplina, onSave }: A
           </View>
           
           <View style={{ flexDirection: "row", justifyContent: "flex-end", marginTop: 20 }}>
-            <TouchableOpacity onPress={onClose} style={{ backgroundColor: themes.colors.redLight, marginRight: 20, borderColor: themes.colors.redDark }}>
+            <TouchableOpacity onPress={onClose} style={[ DetailsSubjectStyles.btn, { backgroundColor: themes.colors.redLight, borderColor: themes.colors.redDark }]}>
               <Text style={[GlobalStyles.text, { color: themes.colors.redDark }]}>Cancelar</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={{ backgroundColor: themes.colors.greenLight, borderColor: themes.colors.greenDark }}
+              style={[ DetailsSubjectStyles.btn, { backgroundColor: themes.colors.greenLight, borderColor: themes.colors.greenDark }]}
               onPress={handleSave}
             >
               <Text style={[GlobalStyles.text, { color: themes.colors.greenDark }]}>Salvar</Text>

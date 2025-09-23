@@ -58,7 +58,7 @@ export default function SemesterList({ filter, period, disciplinas, navigation }
               key={item.id}
               disciplina={item}
               onPress={() => navigation.navigate("DetailsSubject", {
-                discipline: item, // Corrija para passar discipline, não id!
+                discipline: item,
               })}
             />
           ))}

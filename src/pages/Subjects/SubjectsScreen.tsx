@@ -8,10 +8,6 @@ import SubjectCard from '../../components/Cards/detailsCard';
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 import { useSubjects } from '../../context/SubjectsContext';
 
-type PeriodItem = {
-    key: string;
-    period: number;
-};
 
 export default function SubjectsScreen() {
     const [search, setSearch] = useState("");

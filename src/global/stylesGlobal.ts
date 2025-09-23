@@ -140,6 +140,7 @@ export const GlobalStyles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center"
     },
+
     btn:{
         padding: 10,
 
@@ -153,11 +154,21 @@ export const GlobalStyles = StyleSheet.create({
         justifyContent: 'center'
 
     },
+
     separadorVertical:{
-        backgroundColor: '#81818150',
+        backgroundColor: themes.colors.grayLight,
         height: '80%',
         width: 1 ,
     },
+
+    separadorHorizontal:{
+        backgroundColor: themes.colors.grayDark,
+        height: 1,
+        width: '100%' ,
+        marginVertical: 20,
+    },
+
+
     boxNota:{
         backgroundColor: themes.colors.greenLight,
         borderWidth: 1,
